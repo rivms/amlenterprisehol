@@ -8,14 +8,15 @@ az group create --location eastus --name $corerg
 az group create --location eastus --name $amlrg
 ```
 
-# Create Virtual Networks
+# Create Virtual Networks and Subnetd
 ```
 az deployment group create --name Step01 --resource-group $corerg --template-file ./steps/01-vnet/hub.bicep
 ```
-## Create Subnets
 
 # Create Azure Firewall
-
+```
+az deployment group create --name Step01 --resource-group $corerg --template-file ./steps/01-vnet/firewall.bicep
+```
 # Create VPN / Bastion / Jumpbox
 
 # Create Workspace Resources
