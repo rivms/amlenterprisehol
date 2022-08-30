@@ -3,7 +3,7 @@ param location string = resourceGroup().location
 var virtualNetworkName = 'hub-vnet'
 var subnet1Name = 'GatewaySubnet'
 var subnet2Name = 'AzureBastionSubnet'
-var subnetJumpbox = 'JumpboxSubnet'
+var subnetHubVM = 'HubvVMSubnet'
 var subnetFirewall = 'AzureFirewallSubnet'
 var vpnGatewayName = 'vpngateway'
 var vpnPipName = 'vpnpip01'
@@ -31,7 +31,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
         }
       }
       {
-        name: subnetJumpbox
+        name: subnetHubVM
         properties: {
           addressPrefix: '10.1.2.0/27'
         }
@@ -54,7 +54,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2019-11-01' = {
   }
 
   resource subnet3 'subnets' existing = {
-    name: subnetJumpbox
+    name: subnetHubVM
   }
 
   resource subnet4 'subnets' existing = {
