@@ -2,7 +2,7 @@
 param virtualNetworkName string = 'hub-vnet'
 
 @description('Azure Firewall name')
-param firewallName string = 'amlfw${uniqueString(resourceGroup().id)}'
+param firewallName string = 'amlfw${uniqueString(subscription().subscriptionId, resourceGroup().id)}'
 
 @description('Number of public IP addresses for the Azure Firewall')
 @minValue(1)
@@ -11,11 +11,11 @@ param numberOfPublicIPAddresses int = 1
 
 @description('Location for all resources.')
 param location string = resourceGroup().location
-param infraIpGroupName string = '${location}-infra-ipgroup-${uniqueString(resourceGroup().id)}'
-param workloadIpGroupName string = '${location}-workload-ipgroup-${uniqueString(resourceGroup().id)}'
+//param infraIpGroupName string = '${location}-infra-ipgroup-${uniqueString(resourceGroup().id)}'
+//param workloadIpGroupName string = '${location}-workload-ipgroup-${uniqueString(resourceGroup().id)}'
 param firewallPolicyName string = '${firewallName}-firewallPolicy'
 
-var publicIPNamePrefix = 'publicIP'
+var publicIPNamePrefix = 'publicIPFirewall'
 var azurepublicIpname = publicIPNamePrefix
 var azureFirewallSubnetName = 'AzureFirewallSubnet'
 var azureFirewallSubnetId = resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworkName, azureFirewallSubnetName)
@@ -34,27 +34,27 @@ resource vnet 'Microsoft.Network/virtualNetworks@2022-01-01' existing = {
   name: virtualNetworkName
 }
 
-resource workloadIpGroup 'Microsoft.Network/ipGroups@2022-01-01' = {
-  name: workloadIpGroupName
-  location: location
-  properties: {
-    ipAddresses: [
-      '10.20.0.0/24'
-      '10.30.0.0/24'
-    ]
-  }
-}
+//resource workloadIpGroup 'Microsoft.Network/ipGroups@2022-01-01' = {
+//  name: workloadIpGroupName
+//  location: location
+//  properties: {
+//    ipAddresses: [
+//      '10.20.0.0/24'
+//      '10.30.0.0/24'
+//    ]
+//  }
+//}
 
-resource infraIpGroup 'Microsoft.Network/ipGroups@2022-01-01' = {
-  name: infraIpGroupName
-  location: location
-  properties: {
-    ipAddresses: [
-      '10.40.0.0/24'
-      '10.50.0.0/24'
-    ]
-  }
-}
+//resource infraIpGroup 'Microsoft.Network/ipGroups@2022-01-01' = {
+//  name: infraIpGroupName
+//  location: location
+//  properties: {
+//    ipAddresses: [
+//      '10.40.0.0/24'
+//      '10.50.0.0/24'
+//    ]
+//  }
+//}
 
 
 
@@ -70,140 +70,69 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-01-01' = [for
   }
 }]
 
-resource firewallPolicy 'Microsoft.Network/firewallPolicies@2022-01-01'= {
-  name: firewallPolicyName
-  location: location
-  properties: {
-    threatIntelMode: 'Alert'
-  }
-}
+//resource firewallPolicy 'Microsoft.Network/firewallPolicies@2022-01-01'= {
+//  name: firewallPolicyName
+//  location: location
+//  properties: {
+//   threatIntelMode: 'Alert'
+//  }
+//}
 
-resource networkRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@2022-01-01' = {
-  parent: firewallPolicy
-  name: 'DefaultNetworkRuleCollectionGroup'
-  properties: {
-    priority: 200
-    ruleCollections: [
-      {
-        ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
-        action: {
-          type: 'Allow'
-        }
-        name: 'azure-global-services-nrc'
-        priority: 1250
-        rules: [
-          {
-            ruleType: 'NetworkRule'
-            name: 'time-windows'
-            ipProtocols: [
-              'UDP'
-            ]
-            destinationAddresses: [
-              '13.86.101.172'
-            ]
-            sourceIpGroups: [
-              workloadIpGroup.id
-              infraIpGroup.id
-            ]
-            destinationPorts: [
-              '123'
-            ]
-          }
-        ]
-      }
-    ]
-  }
-}
 
-resource applicationRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@2022-01-01' = {
-  parent: firewallPolicy
-  name: 'DefaultApplicationRuleCollectionGroup'
-  dependsOn: [
-    networkRuleCollectionGroup
-  ]
-  properties: {
-    priority: 300
-    ruleCollections: [
-      {
-        ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
-        name: 'global-rule-url-arc'
-        priority: 1000
-        action: {
-          type: 'Allow'
-        }
-        rules: [
-          {
-            ruleType: 'ApplicationRule'
-            name: 'winupdate-rule-01'
-            protocols: [
-              {
-                protocolType: 'Https'
-                port: 443
-              }
-              {
-                protocolType: 'Http'
-                port: 80
-              }
-            ]
-            fqdnTags: [
-              'WindowsUpdate'
-            ]
-            terminateTLS: false
-            sourceIpGroups: [
-              workloadIpGroup.id
-              infraIpGroup.id
-            ]
-          }
-        ]
-      }
-      {
-        ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
-        action: {
-          type: 'Allow'
-        }
-        name: 'Global-rules-arc'
-        priority: 1202
-        rules: [
-          {
-            ruleType: 'ApplicationRule'
-            name: 'global-rule-01'
-            protocols: [
-              {
-                protocolType: 'Https'
-                port: 443
-              }
-            ]
-            targetFqdns: [
-              'www.microsoft.com'
-            ]
-            terminateTLS: false
-            sourceIpGroups: [
-              workloadIpGroup.id
-              infraIpGroup.id
-            ]
-          }
-        ]
-      }
-    ]
-  }
-}
 
-resource firewall 'Microsoft.Network/azureFirewalls@2021-03-01' = {
+resource firewall 'Microsoft.Network/azureFirewalls@2022-01-01' = {
   name: firewallName
   location: location
   zones: null
   dependsOn: [
     vnet
     publicIpAddress
-    workloadIpGroup
-    infraIpGroup
-    networkRuleCollectionGroup
-    applicationRuleCollectionGroup
   ]
   properties: {
     ipConfigurations: azureFirewallIpConfigurations
-    firewallPolicy: {
-      id: firewallPolicy.id
+    //firewallPolicy: {
+    //  id: firewallPolicy.id
+    //}
+    hubIPAddresses: {
+      privateIPAddress: '10.1.3.5'
     }
+    applicationRuleCollections: [
+      {
+        name: 'appRc1'
+        properties: {
+          priority: 101
+          action: {
+            type: 'Allow'
+          }
+          rules: [
+            {
+              name: 'appRule1'
+              protocols: [
+                {
+                  port: 80
+                  protocolType: 'Http'
+                }
+                {
+                  port: 443
+                  protocolType: 'Https'
+                }
+              ]
+              targetFqdns: [
+                'www.microsoft.com'
+              ]
+              sourceAddresses: [
+                '10.1.0.0/24'
+                '10.1.2.0/27'
+                '10.1.3.0/26'
+                '10.1.1.0/27'
+                '10.2.0.0/24'
+                '10.2.1.0/24'
+                '10.2.2.0/24'
+              ]
+            }
+          ]
+        }
+      }
+    ]
   }
 }
