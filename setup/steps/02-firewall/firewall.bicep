@@ -134,4 +134,4 @@ resource firewall 'Microsoft.Network/azureFirewalls@2022-01-01' = {
   }
 }
 
-output firewallPrivateIpAddress string = firewall.properties.hubIPAddresses.privateIPAddress
+output firewallName string = firewall.name

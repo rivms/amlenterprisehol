@@ -57,7 +57,26 @@ Add-DnsServerResourceRecord -ZoneName "cnn.com" -A -Name "cnn.com" -AllowUpdateA
 # Create VPN / Bastion / Jumpbox
 
 ```
+
+$fwName = az deployment group show -g $corerg --name Step02Firewall --query properties.outputs.firewallName.value
+$fwName = $fwName.Trim('"')
+
 az deployment group create --name Step03Jumpbox --resource-group $amlrg --template-file .\steps\03-aml\jumpbox.bicep --parameters adminUsername="amljumpboxadmin01" --parameters adminUserPassword="amlH0!mJhBy3"
+```
+
+# Create Route Table
+
+```
+$fwName = $(az deployment group show -g $corerg --name Step02Firewall --query properties.outputs.firewallName.value).Trim('"')
+
+Write-Host $fwName
+
+$fwIP = $(az network firewall show -g $corerg --name $fwName --query ipConfigurations[0].privateIpAddress).Trim('"')
+
+Write-Host fwIP
+
+az deployment group create --name Step03RouteTables --resource-group $amlrg --template-file .\steps\03-aml\routetables.bicep --parameters firewallPrivateIPAddress=$fwIP
+
 ```
 
 # Monitoring
