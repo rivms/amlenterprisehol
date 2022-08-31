@@ -2,43 +2,68 @@
 @description('Azure Firewall name')
 param firewallName string = 'amlfw${uniqueString(subscription().subscriptionId, resourceGroup().id)}'
 
+@description('Azure Firewall policy name')
+param firewallPolicyName string = '${firewallName}-firewallPolicy'
+
 @description('Location for all resources.')
 param location string = resourceGroup().location
 
-resource firewall 'Microsoft.Network/azureFirewalls@2021-03-01' existing = {
-  name: firewallName
+resource firewallPolicy 'Microsoft.Network/firewallPolicies@2022-01-01'existing = {
+  name: firewallPolicyName
 }
 
 
-resource networkRuleCollectionGroup 'Microsoft.Network/azureFirewalls@2022-01-01' = {
-  parent: firewallPolicy
-  name: 'DefaultNetworkRuleCollectionGroup'
+//resource firewall 'Microsoft.Network/azureFirewalls@2021-03-01' existing = {
+//  name: firewallName
+//}
+
+resource hubvnetIpGroup 'Microsoft.Network/ipGroups@2022-01-01' = {
+  name: 'hubvnetIpGroup'
+  location: location
   properties: {
-    priority: 200
-    ruleCollections: [
-      {
-        ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
-        action: {
-          type: 'Allow'
-        }
-        name: 'azure-global-services-nrc'
-        priority: 1250
-        rules: [
-          {
-            ruleType: 'NetworkRule'
-            name: 'time-windows'
-            ipProtocols: [
-              'UDP'
-            ]
-            destinationAddresses: [
-              '13.86.101.172'
-            ]
-            destinationPorts: [
-              '123'
-            ]
-          }
-        ]
-      }
+    ipAddresses: [
+      '10.1.0.0/16'
+    ]
+  }
+}
+
+resource amlspokeIpGroup 'Microsoft.Network/ipGroups@2022-01-01' = {
+  name: 'amlspokeIpGroup'
+  location: location
+  properties: {
+    ipAddresses: [
+      '10.2.0.0/16'
+    ]
+  }
+}
+
+resource mlsubnetAmlspokeIpGroup 'Microsoft.Network/ipGroups@2022-01-01' = {
+  name: 'mlsubnetAmlspokeIpGroup'
+  location: location
+  properties: {
+    ipAddresses: [
+      '10.2.0.0/24'
+    ]
+  }
+}
+
+resource jumpboxsubnetAmlspokeIpGroup 'Microsoft.Network/ipGroups@2022-01-01' = {
+  name: 'jumpboxsubnetAmlspokeIpGroup'
+  location: location
+  properties: {
+    ipAddresses: [
+      '10.2.2.0/24'
+    ]
+  }
+}
+
+// HubvVMSubnet
+resource HubvVMSubnetAmlspokeIpGroup 'Microsoft.Network/ipGroups@2022-01-01' = {
+  name: 'HubvVMSubnetAmlspokeIpGroup'
+  location: location
+  properties: {
+    ipAddresses: [
+      '10.1.2.0/27'
     ]
   }
 }
@@ -46,44 +71,9 @@ resource networkRuleCollectionGroup 'Microsoft.Network/azureFirewalls@2022-01-01
 resource applicationRuleCollectionGroup 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@2022-01-01' = {
   parent: firewallPolicy
   name: 'DefaultApplicationRuleCollectionGroup'
-  dependsOn: [
-    networkRuleCollectionGroup
-  ]
   properties: {
     priority: 300
     ruleCollections: [
-      {
-        ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
-        name: 'global-rule-url-arc'
-        priority: 1000
-        action: {
-          type: 'Allow'
-        }
-        rules: [
-          {
-            ruleType: 'ApplicationRule'
-            name: 'winupdate-rule-01'
-            protocols: [
-              {
-                protocolType: 'Https'
-                port: 443
-              }
-              {
-                protocolType: 'Http'
-                port: 80
-              }
-            ]
-            fqdnTags: [
-              'WindowsUpdate'
-            ]
-            terminateTLS: false
-            //sourceIpGroups: [
-            //  workloadIpGroup.id
-            //  infraIpGroup.id
-            //]
-          }
-        ]
-      }
       {
         ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
         action: {
@@ -105,10 +95,11 @@ resource applicationRuleCollectionGroup 'Microsoft.Network/firewallPolicies/rule
               'www.microsoft.com'
             ]
             terminateTLS: false
-            //sourceIpGroups: [
-            //  workloadIpGroup.id
-            //  infraIpGroup.id
-            //]
+            sourceIpGroups: [
+              mlsubnetAmlspokeIpGroup.id
+              jumpboxsubnetAmlspokeIpGroup.id
+              HubvVMSubnetAmlspokeIpGroup.id
+            ]
           }
         ]
       }

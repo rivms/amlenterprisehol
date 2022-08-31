@@ -70,13 +70,13 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2022-01-01' = [for
   }
 }]
 
-//resource firewallPolicy 'Microsoft.Network/firewallPolicies@2022-01-01'= {
-//  name: firewallPolicyName
-//  location: location
-//  properties: {
-//   threatIntelMode: 'Alert'
-//  }
-//}
+resource firewallPolicy 'Microsoft.Network/firewallPolicies@2022-01-01'= {
+  name: firewallPolicyName
+  location: location
+  properties: {
+   threatIntelMode: 'Alert'
+  }
+}
 
 
 
@@ -90,49 +90,49 @@ resource firewall 'Microsoft.Network/azureFirewalls@2022-01-01' = {
   ]
   properties: {
     ipConfigurations: azureFirewallIpConfigurations
-    //firewallPolicy: {
-    //  id: firewallPolicy.id
-    //}
+    firewallPolicy: {
+      id: firewallPolicy.id
+    }
     hubIPAddresses: {
       privateIPAddress: '10.1.3.5'
     }
-    applicationRuleCollections: [
-      {
-        name: 'appRc1'
-        properties: {
-          priority: 101
-          action: {
-            type: 'Allow'
-          }
-          rules: [
-            {
-              name: 'appRule1'
-              protocols: [
-                {
-                  port: 80
-                  protocolType: 'Http'
-                }
-                {
-                  port: 443
-                  protocolType: 'Https'
-                }
-              ]
-              targetFqdns: [
-                'www.microsoft.com'
-              ]
-              sourceAddresses: [
-                '10.1.0.0/24'
-                '10.1.2.0/27'
-                '10.1.3.0/26'
-                '10.1.1.0/27'
-                '10.2.0.0/24'
-                '10.2.1.0/24'
-                '10.2.2.0/24'
-              ]
-            }
-          ]
-        }
-      }
-    ]
+//    applicationRuleCollections: [
+//      {
+//        name: 'appRc1'
+//        properties: {
+//          priority: 101
+//          action: {
+//            type: 'Allow'
+//          }
+//          rules: [
+//            {
+//              name: 'appRule1'
+//              protocols: [
+//                {
+//                  port: 80
+//                  protocolType: 'Http'
+//                }
+//                {
+//                  port: 443
+//                  protocolType: 'Https'
+//                }
+//              ]
+//              targetFqdns: [
+//                'www.microsoft.com'
+//              ]
+//              sourceAddresses: [
+//                '10.1.0.0/24'
+//                '10.1.2.0/27'
+//                '10.1.3.0/26'
+//                '10.1.1.0/27'
+//                '10.2.0.0/24'
+//                '10.2.1.0/24'
+//                '10.2.2.0/24'
+//              ]
+//            }
+//          ]
+//        }
+//      }
+//    ]
   }
 }

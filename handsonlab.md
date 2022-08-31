@@ -21,7 +21,12 @@ az deployment group create --name Step01VNetPeering --resource-group $corerg --t
 
 # Create Azure Firewall
 ```
-az deployment group create --name Step01 --resource-group $corerg --template-file ./steps/01-vnet/firewall.bicep
+az deployment group create --name Step01 --resource-group $corerg --template-file ./steps/02-firewall/firewall.bicep
+```
+
+# Create Firewall Rules
+```
+az deployment group create --name Step01 --resource-group $corerg --template-file ./steps/02-firewall/firewallrules.bicep
 ```
 
 # Create Azure Custom DNS VM
@@ -35,9 +40,21 @@ az deployment group create --name Step02 --resource-group $corerg --template-fil
 az deployment group create --name Step03Jumpbox --resource-group $amlrg --template-file .\steps\03-aml\jumpbox.bicep --parameters adminUsername="amljumpboxadmin01" --parameters adminUserPassword="amlH0!mJhBy3"
 ```
 
+# Monitoring
+
+```
+az deployment group create --name Step04AzureMonitor --resource-group $corerg --template-file .\steps\04-monitoring\azuremonitorlogs.bicep 
+```
+
+## Monitor Azure Firewall
+
+```
+az deployment group create --name Step04AzureMonitor --resource-group $corerg --template-file .\steps\04-monitoring\azuremonitorexportlogsfw.bicep 
+```
+
 # Create Workspace Resources
 
-# Create Firewall Rules
+
 
 # Create Route Table
 
