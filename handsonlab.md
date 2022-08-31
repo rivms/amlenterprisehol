@@ -1,3 +1,7 @@
+# Pre-Requisites
+Install the Azure CLI tool
+Switch directory to the ```setup``` folder and run the commands shown below from a Powershell terminal. 
+
 # Create Resource Groups
 
 ```
@@ -56,11 +60,24 @@ Add-DnsServerResourceRecord -ZoneName "cnn.com" -A -Name "cnn.com" -AllowUpdateA
 az deployment group create --name Step03Jumpbox --resource-group $amlrg --template-file .\steps\03-aml\jumpbox.bicep --parameters adminUsername="amljumpboxadmin01" --parameters adminUserPassword="amlH0!mJhBy3"
 ```
 
+# Monitoring
+
+```
+az deployment group create --name Step02Firewall --resource-group $corerg --template-file ./steps/04-monitoring/azuremonitorlogs.bicep
+
+```
+
+```
+az deployment group create --name Step02Firewall --resource-group $corerg --template-file ./steps/04-monitoring/azuremonitorexportlogsaml.bicep
+
+```
+
+```
+az deployment group create --name Step02Firewall --resource-group $corerg --template-file ./steps/04-monitoring/azuremonitorexportlogsfw.bicep
+
+```
+
+
+
 # Create Workspace Resources
-
-# Create Firewall Rules
-
-# Create Route Table
-
-# Create AML Workspace
 
