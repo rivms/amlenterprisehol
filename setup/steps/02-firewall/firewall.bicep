@@ -93,9 +93,6 @@ resource firewall 'Microsoft.Network/azureFirewalls@2022-01-01' = {
     firewallPolicy: {
       id: firewallPolicy.id
     }
-    hubIPAddresses: {
-      privateIPAddress: '10.1.3.5'
-    }
 //    applicationRuleCollections: [
 //      {
 //        name: 'appRc1'

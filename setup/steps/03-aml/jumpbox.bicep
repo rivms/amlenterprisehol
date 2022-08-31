@@ -95,7 +95,7 @@ var subnetName = 'jumpboxsubnet'
 //var subnetPrefix = '10.1.2.0/27'
 var virtualNetworkName = 'amlspoke-vnet'
 var networkSecurityGroupName = 'amljumpboxvm-NSG'
-var virtualNetworkResourceGroupName = 'amlholcore-dev-rg'
+var virtualNetworkResourceGroupName = 'amlholhub-dev-rg'
 
 
 //resource KeyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
