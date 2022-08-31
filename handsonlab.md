@@ -68,16 +68,23 @@ az deployment group create --name Step02Firewall --resource-group $corerg --temp
 ```
 
 ```
-az deployment group create --name Step02Firewall --resource-group $corerg --template-file ./steps/04-monitoring/azuremonitorexportlogsaml.bicep
-
-```
-
-```
 az deployment group create --name Step02Firewall --resource-group $corerg --template-file ./steps/04-monitoring/azuremonitorexportlogsfw.bicep
 
 ```
 
+# Optional Steps
+
+## AML Azure Monitor Integration
+Once AML is deployed you may want to integrate with Azure Monitor logs. This can be done via the portal or using the sample script below
+
+```
+az deployment group create --name Step02Firewall --resource-group $corerg --template-file ./steps/04-monitoring/azuremonitorexportlogsaml.bicep
+
+```
 
 
-# Create Workspace Resources
+
+
+
+
 
