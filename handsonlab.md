@@ -41,6 +41,15 @@ az deployment group create --name Step02FirewallRules --resource-group $corerg -
 az deployment group create --name Step02 --resource-group $corerg --template-file .\steps\02-firewall\customdns.bicep --parameters adminUsername="amlholadmin02" --parameters adminUserPassword="amlH0!mJhBy3"
 ```
 
+# Configure DNS Forwarder
+Using Bastion connect to the DNS VM. Run the contents of the ```dns.ps1``` script to install and configure a DNS server on this machine. Contents of the script file are reproduced below. 
+
+```
+Install-WindowsFeature -Name DNS -IncludeManagementTools 
+Add-DnsServerPrimaryZone -Name "cnn.com" -ZoneFile "cnn.com.dns"
+Add-DnsServerResourceRecord -ZoneName "cnn.com" -A -Name "cnn.com" -AllowUpdateAny -IPv4Address "1.2.3.5" -TimeToLive 01:00:00 -AgeRecord
+```
+
 # Create VPN / Bastion / Jumpbox
 
 ```
