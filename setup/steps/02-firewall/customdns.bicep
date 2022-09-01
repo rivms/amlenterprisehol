@@ -217,3 +217,4 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-03-01' = {
 }
 
 
+output customdnsvmname string = vm.name

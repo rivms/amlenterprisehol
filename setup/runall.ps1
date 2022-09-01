@@ -50,7 +50,20 @@ az deployment group create --name Step03Jumpbox --resource-group $amlrg --templa
  
 Write-Host "Create Route Table"
 
-az deployment group create --name Step03RouteTables --resource-group $amlrg --template-file .\steps\03-aml\routetables.bicep 
+$fwName = $(az deployment group show -g $corerg --name Step02Firewall --query properties.outputs.firewallName.value).Trim('"')
+
+Write-Host $fwName
+
+$fwIP = $(az network firewall show -g $corerg --name $fwName --query ipConfigurations[0].privateIpAddress).Trim('"')
+
+Write-Host $fwIP
+
+az deployment group create --name Step03RouteTables --resource-group $corerg --template-file .\steps\03-aml\routetables.bicep --parameters firewallPrivateIPAddress=$fwIP
+
+az network vnet subnet update -g $corerg -n mlsubnet --vnet-name amlspoke-vnet --route-table mlsubnetRouteTable
+
+az network vnet subnet update -g $corerg -n jumpboxsubnet --vnet-name amlspoke-vnet --route-table jumpboxsubnetRouteTable
+
 
 Write-Host "Monitoring"
 
