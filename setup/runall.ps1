@@ -67,16 +67,6 @@ az network vnet subnet update -g $corerg -n mlsubnet --vnet-name amlspoke-vnet -
 az network vnet subnet update -g $corerg -n jumpboxsubnet --vnet-name amlspoke-vnet --route-table jumpboxsubnetRouteTable
 
 
-Write-Host "Monitoring"
-
- 
-az deployment group create --name Step04AzureMonitorLogs --resource-group $corerg --template-file ./steps/04-monitoring/azuremonitorlogs.bicep
-
- 
-
- 
-az deployment group create --name Step04ExportFirewallLogs --resource-group $corerg --template-file ./steps/04-monitoring/azuremonitorexportlogsfw.bicep
-
 
 
 
