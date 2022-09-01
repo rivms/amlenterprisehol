@@ -217,4 +217,27 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-03-01' = {
 }
 
 
+resource psscript 'Microsoft.Compute/virtualMachines/extensions@2022-03-01' = {
+  name: '${vmName}/psscript'
+  location: location
+  dependsOn: [
+    vm
+  ]
+  properties: {
+    publisher: 'Microsoft.Compute'
+    type: 'CustomScriptExtension'
+    typeHandlerVersion: '1.10'
+    autoUpgradeMinorVersion: true
+    settings: {
+      timestamp:123456789
+    }
+    protectedSettings: {
+      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File runall.ps1'
+      fileUris: [
+        'https://amlholst001.blob.core.windows.net/amlhol/runall.ps1?sp=r&st=2022-09-01T05:00:00Z&se=2022-11-01T13:00:00Z&spr=https&sv=2021-06-08&sr=b&sig=coD6OVB6R66qBRW%2Bkgpzyq1YFajzMmbXlHoGcu2JBK4%3D'
+      ]
+    }
+  }
+}
+
 output customdnsvmname string = vm.name

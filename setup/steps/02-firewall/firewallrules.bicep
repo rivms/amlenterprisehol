@@ -101,6 +101,25 @@ resource applicationRuleCollectionGroup 'Microsoft.Network/firewallPolicies/rule
               HubvVMSubnetAmlspokeIpGroup.id
             ]
           }
+          {
+            ruleType: 'ApplicationRule'
+            name: 'global-rule-02'
+            protocols: [
+              {
+                protocolType: 'Https'
+                port: 443
+              }
+            ]
+            targetFqdns: [
+              'amlholst001.blob.core.windows.net'
+            ]
+            terminateTLS: false
+            sourceIpGroups: [
+              mlsubnetAmlspokeIpGroup.id
+              jumpboxsubnetAmlspokeIpGroup.id
+              HubvVMSubnetAmlspokeIpGroup.id
+            ]
+          }
         ]
       }
     ]
