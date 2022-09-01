@@ -50,6 +50,8 @@ az deployment group create --name Step03Jumpbox --resource-group $amlrg --templa
  
 Write-Host "Create Route Table"
 
+az config set extension.use_dynamic_install=yes_without_prompt
+
 $fwName = $(az deployment group show -g $corerg --name Step02Firewall --query properties.outputs.firewallName.value).Trim('"')
 
 Write-Host $fwName
