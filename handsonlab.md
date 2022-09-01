@@ -42,13 +42,16 @@ az deployment group create --name Step02FirewallRules --resource-group $corerg -
 
 # Create Azure Custom DNS VM
 ```
-az deployment group create --name Step02 --resource-group $corerg --template-file .\steps\02-firewall\customdns.bicep --parameters adminUsername="amlholadmin02" --parameters adminUserPassword="amlH0!mJhBy3"
+az deployment group create --name Step02CustomDns --resource-group $corerg --template-file .\steps\02-firewall\customdns.bicep --parameters adminUsername="amlholadmin02" --parameters adminUserPassword="amlH0!mJhBy3"
 ```
 
 # Configure DNS Forwarder
 Using Bastion connect to the DNS VM. Run the contents of the ```dns.ps1``` script to install and configure a DNS server on this machine. Contents of the script file are reproduced below. 
 
 ```
+
+$customdnsvmname = $(az deployment group show -g $corerg --name Step02Firewall --query properties.outputs.firewallName.value).Trim('"')
+
 Install-WindowsFeature -Name DNS -IncludeManagementTools 
 Add-DnsServerPrimaryZone -Name "cnn.com" -ZoneFile "cnn.com.dns"
 Add-DnsServerResourceRecord -ZoneName "cnn.com" -A -Name "cnn.com" -AllowUpdateAny -IPv4Address "1.2.3.5" -TimeToLive 01:00:00 -AgeRecord
@@ -58,24 +61,26 @@ Add-DnsServerResourceRecord -ZoneName "cnn.com" -A -Name "cnn.com" -AllowUpdateA
 
 ```
 
-$fwName = az deployment group show -g $corerg --name Step02Firewall --query properties.outputs.firewallName.value
-$fwName = $fwName.Trim('"')
-
 az deployment group create --name Step03Jumpbox --resource-group $amlrg --template-file .\steps\03-aml\jumpbox.bicep --parameters adminUsername="amljumpboxadmin01" --parameters adminUserPassword="amlH0!mJhBy3"
 ```
 
 # Create Route Table
 
 ```
+
 $fwName = $(az deployment group show -g $corerg --name Step02Firewall --query properties.outputs.firewallName.value).Trim('"')
 
 Write-Host $fwName
 
 $fwIP = $(az network firewall show -g $corerg --name $fwName --query ipConfigurations[0].privateIpAddress).Trim('"')
 
-Write-Host fwIP
+Write-Host $fwIP
 
-az deployment group create --name Step03RouteTables --resource-group $amlrg --template-file .\steps\03-aml\routetables.bicep --parameters firewallPrivateIPAddress=$fwIP
+az deployment group create --name Step03RouteTables --resource-group $corerg --template-file .\steps\03-aml\routetables.bicep --parameters firewallPrivateIPAddress=$fwIP
+
+az network vnet subnet update -g $corerg -n mlsubnet --vnet-name amlspoke-vnet --route-table mlsubnetRouteTable
+
+az network vnet subnet update -g $corerg -n jumpboxsubnet --vnet-name amlspoke-vnet --route-table jumpboxsubnetRouteTable
 
 ```
 
