@@ -111,7 +111,7 @@ resource applicationRuleCollectionGroup 'Microsoft.Network/firewallPolicies/rule
               }
             ]
             targetFqdns: [
-              'amlholst001.blob.core.windows.net'
+              'amlholst001.blob.${environment().suffixes.storage}'
             ]
             terminateTLS: false
             sourceIpGroups: [
