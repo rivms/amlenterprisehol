@@ -2,6 +2,7 @@
 
 
 # Firewall
+Do you have a NVA that you need to send traffic to?
 
 | VNET Name| New or existing|
 | ---- | --- |
