@@ -1,12 +1,17 @@
-# 
+# Pre-Requisites Check
 
 
-# Firewall
-Do you have a NVA that you need to send traffic to?
+## Network Routing
 
-| VNET Name| New or existing|
-| ---- | --- |
-| hub-vnet| Existing|
+Will [force tunneling](https://docs.microsoft.com/en-us/azure/firewall/forced-tunneling) be utilised to send traffic network through a security appliance for firewall or proxy inspection? (e.g. Azure Firewall, Palo Alto, F5). 
+
+If force tunneling is **not** going to be used, AML network traffic will egress via the default network route (direct to internet).
+
+If force tunneling **is** to be used, obtain the private IP address of the security appliance. This IP address will be utilised to create/update a user defined route to send AML traffic via the security appliance.
+
+
+
+
 
 
 # Azure Machine Learning Workspace
