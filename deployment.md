@@ -5,7 +5,7 @@
 
 ### Routing
 
-Will [force tunneling](https://docs.microsoft.com/en-us/azure/firewall/forced-tunneling) be utilised to send AML traffic through a security appliance for firewall or proxy inspection? (e.g. Azure Firewall, Palo Alto, F5).
+Will [force tunneling](https://docs.microsoft.com/en-us/azure/firewall/forced-tunneling) be utilised to send AML traffic through a network virtual appliance (NVA) for firewall or proxy inspection? (e.g. Azure Firewall, Palo Alto, F5).
 
 |**Force Tunneling** | **Action** |
 | --- | --- |
