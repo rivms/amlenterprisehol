@@ -27,9 +27,9 @@ az deployment group create --name Step01VNetPeeringSpoke --resource-group $corer
 ```
 
 # Create private zones
-
+```
 az deployment group create --name Step01PrivateDnsZone --resource-group $corerg --template-file ./steps/01-vnet/privatednszones.bicep 
-
+```
 # Deploy Bastion
 
 ```
