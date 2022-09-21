@@ -38,7 +38,7 @@ Will endpoints utilise [Azure provided DNS](https://learn.microsoft.com/en-us/az
 | No | No further action is required. |Azure provided DNS will be utilised for name resolution requests.|
 | Yes | 1) Conditional forwarders will need to be created for Private Endpoint name resolution. </br> See section below. |
 
-### 
+### Private EndPoint Conditional Forwarders
 
 
 # Azure Machine Learning Workspace
