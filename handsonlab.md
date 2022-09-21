@@ -6,8 +6,8 @@
 # Create Resource Groups
 
 ```
-$corerg="amlholhub-dev-rg"
-$amlrg="amlwsholspoke-dev-rg"
+$corerg="amlholhub-dev-rg"    # To be used for the creation of the hub virtual network and resources
+$amlrg="amlwsholspoke-dev-rg" # To be used for the creation of the AML spoke virtual network and resources
 
 az group create --location eastus --name $corerg
 az group create --location eastus --name $amlrg
