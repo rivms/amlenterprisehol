@@ -3,7 +3,9 @@
 - Clone the repo
 - Start a PowerShell session or Cloud Shell (PowerShell) and switch directory to the ```setup``` folder and run the commands shown below from a Powershell terminal. 
 
-# Create Resource Groups
+# Infrastructure Deployment
+
+## Create Resource Groups
 
 ```
 $corerg="amlholhub-dev-rg"    # To be used for the creation of the hub virtual network and resources
@@ -13,7 +15,7 @@ az group create --location eastus --name $corerg
 az group create --location eastus --name $amlrg
 ```
 
-# Create Virtual Networks and Subnet
+## Create Virtual Networks
 ```
 az deployment group create --name Step01Hub --resource-group $corerg --template-file ./steps/01-vnet/hub.bicep
 az deployment group create --name Step01Spoke --resource-group $corerg --template-file ./steps/01-vnet/amlspoke.bicep
