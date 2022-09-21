@@ -1,5 +1,4 @@
-# Pre-Requisites Check
-
+# Infrastructure
 
 ## Networking
 
@@ -25,9 +24,14 @@ Will [force tunneling](https://docs.microsoft.com/en-us/azure/firewall/forced-tu
 | **Force Tunneling** | **Action** |
 | --- | --- |
 | No | No further action is required. AML network traffic will egress via the [default network route](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview#default).|
-| Yes | Obtain the private IP address of the security appliance. This IP address will be utilised to create/update a [user defined route](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview#user-defined) to send AML traffic via the security appliance.|
+| Yes | i) Obtain the private IP address of the security appliance. This IP address will be utilised to create/update a [user defined route](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview#user-defined) to send AML traffic via the security appliance. </br> ii ) Review **User Defined Route** section below|
 
 
+#### User Defined Route
+
+## Domain Name Resolution
+
+Will 
 
 
 
