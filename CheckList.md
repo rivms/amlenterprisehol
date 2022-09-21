@@ -24,15 +24,21 @@ Will [force tunneling](https://docs.microsoft.com/en-us/azure/firewall/forced-tu
 | **Force Tunneling** | **Action** |
 | --- | --- |
 | No | No further action is required. AML network traffic will egress via the [default network route](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview#default).|
-| Yes | i) Obtain the private IP address of the security appliance. This IP address will be utilised to create/update a [user defined route](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview#user-defined) to send AML traffic via the security appliance. </br> ii ) Review **User Defined Route** section below|
+| Yes | 1) Obtain the private IP address of the security appliance. This IP address will be utilised to create/update a [user defined route](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview#user-defined) to send AML traffic via the security appliance. </br> 2) Review **User Defined Route** section below|
 
 
 #### User Defined Route
 
 ## Domain Name Resolution
 
-Will 
+Will endpoints utilise [Azure provided DNS](https://learn.microsoft.com/en-us/azure/virtual-network/what-is-ip-address-168-63-129-16) for name resolution or utilise a deployed DNS server?
 
+| **Custom DNS Server** | **Action** |
+| --- | --- |
+| No | No further action is required. |Azure provided DNS will be utilised for name resolution requests.|
+| Yes | 1) Conditional forwarders will need to be created for Private Endpoint name resolution. </br> See section below. |
+
+### 
 
 
 # Azure Machine Learning Workspace
